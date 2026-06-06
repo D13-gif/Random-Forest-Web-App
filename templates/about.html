@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="fw-bold">Tentang Aplikasi</h1>
+                <p class="text-muted">Sistem Klasifikasi Sampah Berbasis Random Forest Algorithm</p>
+            </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3><i class="bi bi-bookmark-star-fill me-2 text-primary"></i>Tujuan Proyek</h3>
+                    <p>Aplikasi ini dikembangkan sebagai tugas praktikum Mata Kuliah Kecerdasan Buatan pada Bab 8: Random Forest Algorithm di Universitas Bale Bandung. Tujuan utamanya adalah menerapkan algoritma Random Forest untuk mengklasifikasikan gambar sampah ke dalam enam kategori dengan akurasi tinggi.</p>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3><i class="bi bi-diagram-3 me-2 text-primary"></i>Metodologi</h3>
+                    <h5>Ekstraksi Fitur (2.884 fitur)</h5>
+                    <ul>
+                        <li><strong>Histogram Warna HSV:</strong> 32 bins per channel = 96 fitur</li>
+                        <li><strong>HOG:</strong> Histogram of Oriented Gradients = 1.764 fitur</li>
+                        <li><strong>Piksel Datar:</strong> Grayscale 32x32 = 1.024 fitur</li>
+                    </ul>
+                    <h5>Model</h5>
+                    <p>Random Forest Classifier dengan n_estimators=200 dan max_depth=20 pada dataset Garbage Classification.</p>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3><i class="bi bi-github me-2 text-primary"></i>Teknologi</h3>
+                    <p><strong>Backend:</strong> Python, Flask, OpenCV, Scikit-learn</p>
+                    <p><strong>Frontend:</strong> Bootstrap 5, JavaScript</p>
+                    <p><strong>Deployment:</strong> Gunicorn untuk Heroku/Railway</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-arrow-left me-2"></i>Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

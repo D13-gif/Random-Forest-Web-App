@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <div class="text-center">
+                        <div class="result-icon mb-3">
+                            <i class="bi {{ class_info.icon }} display-4" style="color: {{ class_info.color }};"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">Hasil Klasifikasi</h3>
+                        <p class="text-muted mb-0">AI mendeteksi sampah Anda sebagai:</p>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-5 mb-4 mb-md-0">
+                            <div class="result-image-container">
+                                <img src="{{ result_image }}" alt="Uploaded image"
+                                     class="img-fluid rounded-3 shadow-sm w-100">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="result-card p-4 rounded-3 mb-3"
+                                 style="background-color: {{ class_info.bg_color }}; border-left: 4px solid {{ class_info.color }};">
+                                <h4 class="fw-bold mb-2">
+                                    {{ class_info.id }}
+                                </h4>
+                                <p class="text-muted mb-0">{{ class_info.description }}</p>
+                            </div>
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-semibold">Tingkat Keyakinan</span>
+                                    <span class="fw-bold">{{ confidence|round(1) }}%</span>
+                                </div>
+                                <div class="progress" style="height: 12px;">
+                                    <div class="progress-bar"
+                                         role="progressbar"
+                                         style="width: {{ confidence }}%; background-color: {{ class_info.color }};"
+                                         aria-valuenow="{{ confidence|round(1) }}"
+                                         aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tip-box p-3 rounded-3 bg-light border">
+                                <h6 class="fw-semibold">
+                                    <i class="bi bi-lightbulb-fill text-warning me-1"></i>Tips Daur Ulang
+                                </h6>
+                                <p class="mb-0 text-muted small">{{ class_info.tip }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-bar-chart-fill me-2"></i>Distribusi Probabilitas Semua Kelas
+                    </h5>
+                    <div class="probability-bars">
+                        {% for cls, prob in all_probs %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span class="text-capitalize fw-medium">{{ cls }}</span>
+                                <span class="text-muted">{{ prob|round(1) }}%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-{{ 'success' if cls == predicted_class else 'secondary' }}"
+                                     style="width: {{ prob }}%;"
+                                     aria-valuenow="{{ prob|round(1) }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>Klasifikasi Lagi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

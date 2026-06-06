@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mx-auto text-center">
+                <h1 class="display-3 fw-bold mb-3">
+                    <i class="bi bi-trash3-fill me-2"></i>Klasifikasi Sampah
+                </h1>
+                <p class="lead mb-4">
+                    Sistem Klasifikasi Sampah Berbasis AI menggunakan algoritma
+                    <strong>Random Forest</strong>. Unggah gambar sampah dan dapatkan
+                    klasifikasi secara otomatis dengan akurasi tinggi.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="#upload-section" class="btn btn-light btn-lg px-4">
+                        <i class="bi bi-cloud-upload me-2"></i>Coba Sekarang
+                    </a>
+                    {% if cm_exists %}
+                    <a href="{{ url_for('static', filename='confusion_matrix.png') }}"
+                       class="btn btn-outline-light btn-lg px-4" target="_blank">
+                        <i class="bi bi-bar-chart-fill me-2"></i>Lihat Performa Model
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="upload-section" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg rounded-4">
+                    <div class="card-body p-4">
+                        <h3 class="card-title text-center mb-4">
+                            <i class="bi bi-upload me-2 text-primary"></i>Unggah Gambar Sampah
+                        </h3>
+                        <p class="text-center text-muted mb-4">
+                            Seret dan lepas gambar sini, atau klik untuk memilih file
+                        </p>
+                        <form id="uploadForm" action="{{ url_for('predict') }}" method="POST"
+                              enctype="multipart/form-data" novalidate>
+                            <div class="mb-3">
+                                <div id="dropZone" class="drop-zone border-2 border-dashed rounded-3 p-5 text-center"
+                                     style="cursor: pointer;">
+                                    <div id="dropZoneContent">
+                                        <i class="bi bi-cloud-arrow-up display-4 text-muted mb-3"></i>
+                                        <p class="mb-0 text-muted">Drag & drop gambar di sini</p>
+                                        <p class="mb-0 text-muted">atau klik untuk memilih file</p>
+                                        <small class="text-muted">Format: JPG, PNG, GIF, BMP, WebP (Maks 16MB)</small>
+                                    </div>
+                                    <div id="previewContainer" class="d-none">
+                                        <img id="imagePreview" src="" alt="Preview"
+                                             class="img-fluid rounded-3" style="max-height: 300px;">
+                                        <button type="button" id="removeImage"
+                                                class="btn btn-sm btn-outline-danger mt-2">
+                                            <i class="bi bi-x-circle me-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="file" id="fileInput" name="file"
+                                       class="form-control d-none" accept="image/*">
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" id="submitBtn" class="btn btn-primary btn-lg"
+                                        disabled>
+                                    <i class="bi bi-magic me-2"></i>Klasifikasikan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold">Bagaimana Cara Kerjanya?</h2>
+                <p class="text-muted">Teknologi Machine Learning untuk Daur Ulang Lebih Baik</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle mx-auto mb-3">
+                            <i class="bi bi-upload"></i>
+                        </div>
+                        <h5>1. Upload Gambar</h5>
+                        <p class="text-muted">Unggah foto sampah dari perangkat Anda. Sistem menerima berbagai format gambar.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle mx-auto mb-3">
+                            <i class="bi bi-cpu"></i>
+                        </div>
+                        <h5>2. Ekstraksi Fitur</h5>
+                        <p class="text-muted">AI mengekstrak 2.884 fitur dari histogram warna, HOG, dan piksel grayscale.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle mx-auto mb-3">
+                            <i class="bi bi-check2-all"></i>
+                        </div>
+                        <h5>3. Prediksi AI</h5>
+                        <p class="text-muted">Random Forest mengklasifikasikan sampah ke 6 kategori dengan tingkat akurasi tinggi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold">6 Kategori Sampah</h2>
+                <p class="text-muted">Sistem mengenali jenis-jenis sampah berikut</p>
+            </div>
+        </div>
+        <div class="row g-3 justify-content-center">
+            {% for key, info in class_info.items() %}
+            <div class="col-md-4 col-lg-2">
+                <div class="card category-card h-100 border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi {{ info.icon }} display-5 mb-2" style="color: {{ info.color }};"></i>
+                        <h6 class="mb-0 fw-semibold">{{ info.id }}</h6>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
